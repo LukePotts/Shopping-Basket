@@ -16,7 +16,8 @@ namespace QA
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ShoppingBasketSplashScreen());            
+            Application.Run(new ShoppingBasketSplashScreen());       
+            //random comment     
         }
     }
 }
