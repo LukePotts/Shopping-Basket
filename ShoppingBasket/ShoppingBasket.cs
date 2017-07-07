@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace ShoppingBasket
 {
@@ -121,9 +122,75 @@ namespace ShoppingBasket
             return Exists;
         }
 
-        private void SaveBasket()
+        public bool SaveBasket(string FileName)
         {
             UpdateBasketDetails();
+            try
+            {
+                string FileRoute = "C:\\Users\\PottsL\\Documents";
+                string FileNameWithRoute = FileRoute +"\\"+ FileName+".txt";
+                StreamWriter SaveFile = new StreamWriter(FileNameWithRoute);
+                SaveFile.Write(ConvertBasketToReceiptFormat());
+                SaveFile.Close();
+                if (File.Exists(FileNameWithRoute))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch
+            {                
+                return false;
+            }
+        }
+
+        public string ConvertBasketToReceiptFormat()
+        {
+            string ToSave = string.Empty;
+            //puts each item in the list into one text block seperated by a new line
+            foreach (OrderItem O in OrderItems)
+            {
+                ToSave =
+                    string.Format(BasketDisplayFormat,
+                O.ProductName,
+                O.Quantity,
+                O.LastestPrice,
+                O.TotalOrder)+
+                Environment.NewLine;
+            }
+            //adds other info to text
+            //header
+            ToSave = "Shopping Basket App"
+    //subheader
+    + Environment.NewLine + "Receipt - " + Convert.ToString(DateTime.Now)
+    //space
+    + Environment.NewLine
+    //column headers
+    + Environment.NewLine + "Product\t\t\tQuantity\t\tPrice Per Unit\t\tTotal"
+    //underlining
+    + Environment.NewLine + string.Format(BasketDisplayFormat, "===", "===", "===", "===")
+    //adds text from list
+    + Environment.NewLine + ToSave
+    //space
+    + Environment.NewLine
+    //underlining
+    + Environment.NewLine + string.Format(BasketDisplayFormat, "===", "===", "===", "===")
+    //space
+    + Environment.NewLine
+    //totals
+    + Environment.NewLine + string.Format("Quantity Of Products: {0}\tQuantity of items: {1}\tTotal cost: {2}", NumberOfProducts, NumberOfItems, BasketTotal)
+    //space
+    + Environment.NewLine
+    //underlining
+    + Environment.NewLine + string.Format(BasketDisplayFormat, "===", "===", "===", "===")
+    //space
+    + Environment.NewLine
+    //footer
+    + Environment.NewLine + "Luke Potts - QA Apprenticeship Coursework - Shopping Basket";
+            return ToSave;
         }
         public void UpdateBasketDetails()
         {
@@ -181,5 +248,7 @@ namespace ShoppingBasket
                 return false;
             }
         }
+
+        public string BasketDisplayFormat = "{0}\t\t\t{1}\t\t\t{2}\t\t\t{3}";
     }
 }

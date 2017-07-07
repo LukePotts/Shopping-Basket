@@ -15,7 +15,6 @@ namespace QA
     public partial class BasketForm : Form
     {
         public ShoppingBasket.ShoppingBasket ThisBasket;
-        string BasketDisplayFormat = "{0}\t\t\t{1}\t\t\t{2}\t\t\t{3}";
         public BasketForm()
         {
             InitializeComponent();
@@ -81,7 +80,7 @@ namespace QA
             Basket.Items.Clear();
             foreach (OrderItem i in ThisBasket.OrderItems)
             {
-                Basket.Items.Add(string.Format(BasketDisplayFormat, Convert.ToString(i.ProductName), Convert.ToInt32(i.Quantity), string.Format("{0:C}", i.LastestPrice), string.Format("{0:C}", i.TotalOrder)));
+                Basket.Items.Add(string.Format(ThisBasket.BasketDisplayFormat, Convert.ToString(i.ProductName), Convert.ToInt32(i.Quantity), string.Format("{0:C}", i.LastestPrice), string.Format("{0:C}", i.TotalOrder)));
             }
         }
         private void UpdateNoOfItems()
@@ -178,32 +177,9 @@ namespace QA
                 //when save is pressed
                 //only save if file has a name
                 if (!string.IsNullOrEmpty(SaveFile.FileName))
-                {
-                    string ToSave = string.Empty;
-                    //puts each item in the list into one text bloc seperated by a new line
-                    foreach (string l in Basket.Items)
-                    {
-                        ToSave = ToSave + l + Environment.NewLine;
-                    }
-                    //adds other info to text
-                    //header
-                        ToSave = "Shopping Basket App"
-                        //subheader
-                            + Environment.NewLine + "Receipt - " + Convert.ToString(DateTime.Now)
-                            //space
-                            + Environment.NewLine
-                            //column headers
-                            + Environment.NewLine + "Product\t\t\tQuantity\t\tPrice Per Unit\t\tTotal"
-                            //underlining
-                            + Environment.NewLine + string.Format(BasketDisplayFormat, "===", "===", "===", "===")
-                            //adds text from list
-                            + Environment.NewLine + ToSave
-                            //space
-                            + Environment.NewLine
-                            //footer
-                            + Environment.NewLine + "Luke Potts - QA Apprenticeship Coursework - Shopping Basket";
+                {                    
                     //saves all text to text file under name in the save as box
-                        File.WriteAllText(SaveFile.FileName, ToSave);
+                        File.WriteAllText(SaveFile.FileName, ThisBasket.ConvertBasketToReceiptFormat());
                 }
                 else
                 {
